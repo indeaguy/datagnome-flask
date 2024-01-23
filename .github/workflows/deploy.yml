@@ -13,6 +13,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Debug SSH_HOST
+      run: echo "SSH_HOST is ${{ env.SSH_HOST }}"
+
     - name: Set up SSH key
       run: |
         mkdir -p ~/.ssh
