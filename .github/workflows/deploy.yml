@@ -21,11 +21,9 @@ jobs:
         echo "SSH_PATH is ${{ vars.SSH_PATH }}"
 
     - name: Start SSH agent and add key
-      run: |
+      run:  |
         eval "$(ssh-agent -s)"
-        echo "${{ secrets.DEPLOY_KEY }}" > gh_action
-        chmod 600 gh_action
-        ssh-add gh_action
+        ssh-add - <<< "${{ secrets.DEPLOY_KEY }}"
 
     - name: Set up known hosts
       run: |
