@@ -20,12 +20,10 @@ jobs:
         echo "SSH_USER is ${{ vars.SSH_USER }}"
         echo "SSH_PATH is ${{ vars.SSH_PATH }}"
 
-    - name: Start SSH agent and add key
+    - name: Start SSH agent
       run: |
         eval "$(ssh-agent -s)"
         echo "${{ secrets.DEPLOY_KEY_PASSPHRASE }}" | ssh-add - <<< "${{ secrets.DEPLOY_KEY }}"
-      env:
-        DEPLOY_KEY_PASSPHRASE: ${{ secrets.DEPLOY_KEY_PASSPHRASE }}
 
     - name: Set up known hosts
       run: |
