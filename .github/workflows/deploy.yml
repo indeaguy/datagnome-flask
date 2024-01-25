@@ -23,14 +23,13 @@ jobs:
     - name: Start SSH agent
       run: |
         eval "$(ssh-agent -s)"
-        echo "${{ secrets.DEPLOY_KEY_PASSPHRASE }}" | ssh-add - <<< "${{ secrets.DEPLOY_KEY }}"
+        ssh-add - <<< "${{ secrets.DEPLOY_KEY }}"
 
     - name: Set up known hosts
       run: |
         mkdir -p ~/.ssh
         ssh-keyscan -t rsa ${{ vars.SSH_HOST }} >> ~/.ssh/known_hosts
-
-
+  
     - name: Deploy to cPanel
       env:
         SSH_PORT: ${{ vars.SSH_PORT }}
