@@ -28,7 +28,7 @@ jobs:
     - name: Set up known hosts
       run: |
         mkdir -p ~/.ssh
-        ssh-keyscan -t rsa ${{ vars.SSH_HOST }} >> ~/.ssh/known_hosts
+        ssh-keyscan -v -t rsa ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts || echo "ssh-keyscan command failed"
   
     - name: Deploy to cPanel
       env:
