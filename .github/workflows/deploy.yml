@@ -14,14 +14,30 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Debug SSH_HOST
-      run: echo "SSH_HOST is ${{ vars.SSH_HOST }}"
+      run: |
+        echo "SSH_HOST is ${{ vars.SSH_HOST }}"
+        echo "SSH_PORT is ${{ vars.SSH_PORT }}"
+        echo "SSH_USER is ${{ vars.SSH_USER }}"
+        echo "SSH_PATH is ${{ vars.SSH_PATH }}"
 
-    - name: Set up SSH key
+    - name: Start SSH agent
+      run: |
+        eval "$(ssh-agent -s)"
+        ssh-add - <<< "${{ secrets.DEPLOY_KEY }}"
+      env:
+        SSH_PASSPHRASE: ${{ secrets.DEPLOY_KEY_PASSPHRASE }}
+
+    - name: Add SSH key to agent
+      run: |
+        echo "${SSH_PASSPHRASE}" | ssh-add - 
+      env:
+        SSH_PASSPHRASE: ${{ secrets.DEPLOY_KEY_PASSPHRASE }}
+
+    - name: Set up known hosts
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -t rsa ${{ vars.SSH_HOST }} >> ~/.ssh/known_hosts
+
 
     - name: Deploy to cPanel
       env:
