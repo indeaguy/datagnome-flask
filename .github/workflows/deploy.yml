@@ -23,12 +23,19 @@ jobs:
     - name: Start SSH agent and add key
       run:  |
         eval "$(ssh-agent -s)"
-        ssh-add - <<< "${{ secrets.DEPLOY_KEY }}"
+        echo "${{ secrets.DEPLOY_KEY }}" > id_rsa
+        chmod 600 id_rsa
+        ssh-add id_rsa
 
     - name: Set up known hosts
       run: |
         mkdir -p ~/.ssh
         ssh-keyscan -p ${{ vars.SSH_PORT }} -t rsa ${{ vars.SSH_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Test SSH connection
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ${{ secrets.DEPLOY_KEY }} -p ${{ vars.SSH_PORT }} ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }} "echo 'SSH connection successful'"
+      
   
     - name: Run script on GitHub Actions runner to deploy to cPanel
       env:
