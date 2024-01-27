@@ -34,7 +34,7 @@ jobs:
 
     - name: Test SSH connection
       run: |
-        ssh -o StrictHostKeyChecking=no -i id_rsa -p ${{ vars.SSH_PORT }} ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }} "echo 'SSH connection successful'"
+        ssh -o StrictHostKeyChecking=no -o HostKeyAlgorithms=+ssh-rsa -i id_rsa -p ${{ vars.SSH_PORT }} ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }} "echo 'SSH connection successful'"
       
   
     - name: Run script on GitHub Actions runner to deploy to cPanel
